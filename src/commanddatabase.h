@@ -22,7 +22,7 @@
 #ifndef __COMMAND_DATABASE__H_
 #define __COMMAND_DATABASE__H_
 
-#include <string.h>
+#include <string>
 #include <map>
 #include <vector>
 
