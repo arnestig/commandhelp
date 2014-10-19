@@ -19,10 +19,37 @@
     along with commandhelp.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include <stdio.h>
+#include "resources.h"
 
-int main( int argc, char *argv[] )
+Resources* Resources::instance = NULL;
+
+Resources::Resources()
+    :   commandDatabase( NULL )
 {
-    return 0;
+    commandDatabase = new CommandDatabase();
+}
+
+Resources::~Resources()
+{
+    delete commandDatabase;
+}
+
+void Resources::DestroyInstance()
+{
+    delete instance;
+    instance = NULL;
+}
+
+Resources* Resources::Instance()
+{
+    if ( instance == NULL ) {
+        instance = new Resources();
+    }
+    return instance;
+}
+
+CommandDatabase* Resources::getCommandDatabase() const
+{
+    return commandDatabase;
 }
 

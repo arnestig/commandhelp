@@ -19,10 +19,26 @@
     along with commandhelp.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include <stdio.h>
+#ifndef __RESOURCES_H__
+#define __RESOURCES_H__
 
-int main( int argc, char *argv[] )
+#include "commanddatabase.h"
+
+class Resources
 {
-    return 0;
-}
+    public:
+        static Resources* Instance();
+        static void DestroyInstance();
 
+        CommandDatabase* getCommandDatabase() const;
+
+    private:
+        static Resources* instance;
+        Resources();
+        ~Resources();
+        Resources( Resources const& ) {};
+
+        CommandDatabase *commandDatabase;
+};
+
+#endif
