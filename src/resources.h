@@ -23,6 +23,7 @@
 #define __RESOURCES_H__
 
 #include "commanddatabase.h"
+#include "window.h"
 
 class Resources
 {
@@ -31,6 +32,7 @@ class Resources
         static void DestroyInstance();
 
         CommandDatabase* getCommandDatabase() const;
+        Window* getWindow() const;
 
     private:
         static Resources* instance;
@@ -39,6 +41,7 @@ class Resources
         Resources( Resources const& ) {};
 
         CommandDatabase *commandDatabase;
+        Window *window;
 };
 
 #endif

@@ -79,7 +79,17 @@ void CommandDatabase::loadDatabase()
 
 bool CommandDatabase::addCommand( std::string name )
 {
-    return true;
+	commands.push_back( new Command( name ) );
+	return true;
+}
+
+std::vector< std::string > CommandDatabase::getCommandNames()
+{
+	std::vector< std::string > retval;
+	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+		retval.push_back( (*it)->getName() );
+	}
+	return retval;
 }
 
 /** END COMMANDDATABASE **/

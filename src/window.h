@@ -19,31 +19,33 @@
     along with commandhelp.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-//#include <stdio.h>
-#include <signal.h>
-#include <stdlib.h>
-#include "resources.h"
+#ifndef __WINDOW__H_
+#define __WINDOW__H_
 
-void handle_signal( int signal )
+#define Y_OFFSET_SEARCH 0
+#define Y_OFFSET_HELP 1
+#define Y_OFFSET_COMMANDS 2
+#define K_BACKSPACE 127
+
+#include <string>
+
+class Window
 {
-	if ( signal == SIGINT ) {
-		Resources::Instance()->DestroyInstance();
-		exit(0);
-	}
-}
+    public:
+        Window();
+        ~Window();
 
-int main( int argc, char *argv[] )
-{
-	// register our signal handler
-	signal( SIGINT, handle_signal );
+		void draw();
 
-	/** load some test commands **/
-	Resources::Instance()->getCommandDatabase()->addCommand("subversion");
-	Resources::Instance()->getCommandDatabase()->addCommand("ls -lah");
-	Resources::Instance()->getCommandDatabase()->addCommand("dh_make -s -p quickrdp_1-0");
+    private:
+		unsigned int selectedPosition;
+		std::string searchText;
 
-	for(;;) {
-		Resources::Instance()->getWindow()->draw();
-	}
-}
+		void handleInput( int c );
+		std::string getSearchText();
+		void appendSearchText( char *add );
+		void popSearchText();
+};
+
+#endif
 

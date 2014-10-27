@@ -47,6 +47,7 @@ class CommandDatabase
         ~CommandDatabase();
 
 	bool addCommand( std::string name );
+	std::vector< std::string > getCommandNames();
 
     private:
         void loadDatabase();

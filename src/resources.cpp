@@ -27,11 +27,13 @@ Resources::Resources()
     :   commandDatabase( NULL )
 {
     commandDatabase = new CommandDatabase();
+    window = new Window();
 }
 
 Resources::~Resources()
 {
     delete commandDatabase;
+	delete window;
 }
 
 void Resources::DestroyInstance()
@@ -53,3 +55,7 @@ CommandDatabase* Resources::getCommandDatabase() const
     return commandDatabase;
 }
 
+Window* Resources::getWindow() const
+{
+    return window;
+}
