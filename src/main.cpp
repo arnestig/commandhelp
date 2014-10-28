@@ -42,6 +42,8 @@ int main( int argc, char *argv[] )
 	Resources::Instance()->getCommandDatabase()->addCommand("ls -lah");
 	Resources::Instance()->getCommandDatabase()->addCommand("dh_make -s -p quickrdp_1-0");
 
+	Resources::Instance()->getWindow()->loadCommands();
+
 	for(;;) {
 		Resources::Instance()->getWindow()->draw();
 	}

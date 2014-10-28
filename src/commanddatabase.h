@@ -32,9 +32,8 @@ class Command
         Command( std::string name );
         ~Command();
 
-	std::string getName() const;
-	void setName( std::string name );
-	bool execute();
+		std::string getName() const;
+		void setName( std::string name );
 
     private:
         std::string name;
@@ -46,8 +45,9 @@ class CommandDatabase
         CommandDatabase();
         ~CommandDatabase();
 
-	bool addCommand( std::string name );
-	std::vector< std::string > getCommandNames();
+		bool addCommand( std::string name );
+		std::vector< Command* > getCommands();
+		std::vector< std::string > getCommandNames();
 
     private:
         void loadDatabase();

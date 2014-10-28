@@ -42,11 +42,6 @@ void Command::setName( std::string name )
     this->name = name;
 }
 
-bool Command::execute()
-{
-    return true;
-}
-
 /** END COMMAND **/
 
 
@@ -81,6 +76,11 @@ bool CommandDatabase::addCommand( std::string name )
 {
 	commands.push_back( new Command( name ) );
 	return true;
+}
+
+std::vector< Command* > CommandDatabase::getCommands()
+{
+	return commands;
 }
 
 std::vector< std::string > CommandDatabase::getCommandNames()

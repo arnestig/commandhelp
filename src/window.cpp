@@ -19,8 +19,14 @@
     along with commandhelp.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
 #include "window.h"
 #include "resources.h"
+#include <string.h>
 #include <ncursesw/curses.h>
 
 Window::Window()
@@ -41,9 +47,29 @@ Window::~Window()
 	endwin();
 }
 
+void Window::runCommand()
+{
+	if ( curCommand != NULL ) {
+		std::string commandName = curCommand->getName();
+		for( int i = 0; i < commandName.length(); i++ ) {
+			ioctl(0,TIOCSTI, (char*)commandName.c_str()+i);
+		}
+		kill(getpid(), SIGINT);
+	}
+}
+
 std::string Window::getSearchText()
 {
 	return searchText;
+}
+
+void Window::loadCommands()
+{
+	commands.clear();
+	commands = Resources::Instance()->getCommandDatabase()->getCommands();
+	if ( commands.empty() == false ) {
+		curCommand = commands[ 0 ];
+	}
 }
 
 void Window::appendSearchText( char *add )
@@ -54,7 +80,7 @@ void Window::appendSearchText( char *add )
 void Window::popSearchText()
 {
 	if ( searchText.length() > 0 ) {
-		searchText.erase( searchText.end() -1 );
+		searchText.erase( searchText.end() - 1 );
 	}
 }
 
@@ -64,21 +90,32 @@ void Window::handleInput( int c )
 		case KEY_DOWN:
 			if ( selectedPosition < 10 ) {
 				selectedPosition++;
+				if ( commands.size() > selectedPosition ) {
+					curCommand = commands.at( selectedPosition );
+				}
 			}
+		break;
+		case KEY_ENTER:
+		case K_ENTER:
+			runCommand();
 		break;
 		case KEY_UP:
 			if ( selectedPosition > 0 ) {
 				selectedPosition--;
+				if ( commands.size() > selectedPosition ) {
+					curCommand = commands.at( selectedPosition );
+				}
 			}
 		break;
 		case KEY_BACKSPACE:
 		case K_BACKSPACE:
 			popSearchText();
+			loadCommands();
 		break;
 		default:
 			if ( c > 31 && c < 127 ) {
-				//printf("Char: %s (%d)\n", (char*)(&c),c);
 				appendSearchText( (char*)(&c) );			
+				loadCommands();
 			}
 		break;
 	}
@@ -91,7 +128,7 @@ void Window::draw()
 	clrtoeol();
 
 	// draw commands
-	init_pair(1,COLOR_BLACK, COLOR_BRIGHT_YELLOW);
+	init_pair(1,COLOR_BLACK, COLOR_YELLOW);
 	unsigned int commandIndex = 0;
 	std::vector< std::string > commandNames = Resources::Instance()->getCommandDatabase()->getCommandNames();
 	for( std::vector< std::string >::iterator it = commandNames.begin(); it != commandNames.end(); ++it ) {
