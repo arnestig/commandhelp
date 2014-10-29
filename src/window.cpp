@@ -126,7 +126,6 @@ void Window::draw()
 	clrtobot();
 	// draw help
 	mvprintw( Y_OFFSET_HELP, 0, "Help: %s", "Some help" );
-	clrtoeol();
 
 	// draw commands
 	init_pair(1,COLOR_BLACK, COLOR_YELLOW);
@@ -143,8 +142,6 @@ void Window::draw()
 	
 	// draw search box
 	mvprintw( Y_OFFSET_SEARCH, 0, "Search: %s", getSearchText().c_str() );
-	clrtoeol();
-
 
 	int c = wgetch(stdscr);
 	handleInput( c );
