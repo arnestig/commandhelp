@@ -78,16 +78,17 @@ bool CommandDatabase::addCommand( std::string name )
 	return true;
 }
 
-std::vector< Command* > CommandDatabase::getCommands()
+std::vector< Command* > CommandDatabase::getCommands( std::string searchText )
 {
-	return commands;
-}
-
-std::vector< std::string > CommandDatabase::getCommandNames()
-{
-	std::vector< std::string > retval;
-	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
-		retval.push_back( (*it)->getName() );
+	std::vector< Command* > retval;
+	if ( searchText.empty() == false ) {
+		for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+			if ( (*it)->getName().find( searchText ) != std::string::npos ) {
+				retval.push_back( (*it) );
+			}
+		}
+	} else {
+		retval = commands;
 	}
 	return retval;
 }

@@ -66,7 +66,7 @@ std::string Window::getSearchText()
 void Window::loadCommands()
 {
 	commands.clear();
-	commands = Resources::Instance()->getCommandDatabase()->getCommands();
+	commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
 	if ( commands.empty() == false ) {
 		curCommand = commands[ 0 ];
 	}
@@ -88,7 +88,7 @@ void Window::handleInput( int c )
 {
 	switch ( c ) {
 		case KEY_DOWN:
-			if ( selectedPosition < 10 ) {
+			if ( selectedPosition < commands.size() - 1 ) {
 				selectedPosition++;
 				if ( commands.size() > selectedPosition ) {
 					curCommand = commands.at( selectedPosition );
@@ -123,6 +123,7 @@ void Window::handleInput( int c )
 
 void Window::draw()
 {
+	clrtobot();
 	// draw help
 	mvprintw( Y_OFFSET_HELP, 0, "Help: %s", "Some help" );
 	clrtoeol();
@@ -130,14 +131,13 @@ void Window::draw()
 	// draw commands
 	init_pair(1,COLOR_BLACK, COLOR_YELLOW);
 	unsigned int commandIndex = 0;
-	std::vector< std::string > commandNames = Resources::Instance()->getCommandDatabase()->getCommandNames();
-	for( std::vector< std::string >::iterator it = commandNames.begin(); it != commandNames.end(); ++it ) {
+	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
 		// draw background if this is our selected command
 		if ( commandIndex == selectedPosition ) {
 			attron(COLOR_PAIR(1));
 		} 
 
-		mvprintw( Y_OFFSET_COMMANDS + commandIndex++, 0, "%s",(*it).c_str() );
+		mvprintw( Y_OFFSET_COMMANDS + commandIndex++, 0, "%s",(*it)->getName().c_str() );
 		attroff(COLOR_PAIR(1));
 	}
 	
