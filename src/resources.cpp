@@ -24,7 +24,8 @@
 Resources* Resources::instance = NULL;
 
 Resources::Resources()
-    :   commandDatabase( NULL )
+    :   commandDatabase( NULL ),
+    	window( NULL )
 {
     commandDatabase = new CommandDatabase();
     window = new Window();
