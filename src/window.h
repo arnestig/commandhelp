@@ -25,12 +25,15 @@
 #define Y_OFFSET_SEARCH 0
 #define Y_OFFSET_HELP 1
 #define Y_OFFSET_COMMANDS 2
+
+#define K_CTRL_A 1
 #define K_ENTER 10
 #define K_BACKSPACE 127
 
 #include <string>
 #include <vector>
 #include "commanddatabase.h"
+#include <ncursesw/curses.h>
 
 class Window
 {
@@ -38,13 +41,15 @@ class Window
         Window();
         ~Window();
 
+		void init();
 		void draw();
-		void loadCommands();
 
     private:
 		unsigned int selectedPosition;
 		std::string searchText;
 
+		void loadCommands();
+		void addCommand();
 		void runCommand();
 		void handleInput( int c );
 		std::string getSearchText();
@@ -52,6 +57,9 @@ class Window
 		void popSearchText();
 		std::vector< Command* > commands;
 		Command *curCommand;
+		WINDOW *helpWindow;
+		WINDOW *searchWindow;
+		WINDOW *commandWindow;
 };
 
 #endif

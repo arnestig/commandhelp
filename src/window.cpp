@@ -27,24 +27,50 @@
 #include "window.h"
 #include "resources.h"
 #include <string.h>
-#include <ncursesw/curses.h>
 
 Window::Window()
 	:	selectedPosition( 0 ),
 		searchText( "" )
 {
 	initscr();
-	keypad(stdscr, true);
 	noecho();
 	start_color();
 }
 
 Window::~Window()
 {
-	clear();
+	delwin( helpWindow );
+	delwin( searchWindow );
+	delwin( commandWindow );
 	refresh();
-	doupdate();
 	endwin();
+}
+
+void Window::init()
+{
+	loadCommands();
+	int y,x;
+	getmaxyx(stdscr, y, x);
+	// help window
+	helpWindow = newwin(3, x - 1, 4, 1);
+	box(helpWindow, 0, 0);
+	wborder(helpWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+
+	// search window
+	searchWindow = newwin(3, x - 1, 1, 1);
+	box(searchWindow, 0, 0);
+	wborder(searchWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+	keypad( searchWindow, true );
+
+	// command window
+	commandWindow = newwin(y-7, x - 1, 7, 1);
+	box(commandWindow, 0, 0);
+	wborder(commandWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+}
+
+void Window::addCommand()
+{
+
 }
 
 void Window::runCommand()
@@ -95,6 +121,9 @@ void Window::handleInput( int c )
 				}
 			}
 		break;
+		case K_CTRL_A:
+			addCommand();
+		break;
 		case KEY_ENTER:
 		case K_ENTER:
 			runCommand();
@@ -123,9 +152,11 @@ void Window::handleInput( int c )
 
 void Window::draw()
 {
-	clrtobot();
+	wclear( searchWindow );
+	wclear( helpWindow );
+	wclear( commandWindow );
 	// draw help
-	mvprintw( Y_OFFSET_HELP, 0, "Help: %s", "Some help" );
+	mvwprintw( helpWindow, 1, 1, "Help: %s", "Some help" );
 
 	// draw commands
 	init_pair(1,COLOR_BLACK, COLOR_YELLOW);
@@ -133,18 +164,20 @@ void Window::draw()
 	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
 		// draw background if this is our selected command
 		if ( commandIndex == selectedPosition ) {
-			attron(COLOR_PAIR(1));
+			wattron( commandWindow, COLOR_PAIR(1) );
 		} 
 
-		mvprintw( Y_OFFSET_COMMANDS + commandIndex++, 0, "%s",(*it)->getName().c_str() );
-		attroff(COLOR_PAIR(1));
+		mvwprintw( commandWindow, 1 + commandIndex++, 1, "%s",(*it)->getName().c_str() );
+		wattroff( commandWindow, COLOR_PAIR(1) );
 	}
 	
 	// draw search box
-	mvprintw( Y_OFFSET_SEARCH, 0, "Search: %s", getSearchText().c_str() );
+	mvwprintw( searchWindow, 1, 1, "Search: %s", getSearchText().c_str() );
 
-	int c = wgetch(stdscr);
+	wrefresh(helpWindow);
+	wrefresh(searchWindow);
+	wrefresh(commandWindow);
+	int c = wgetch(searchWindow);
 	handleInput( c );
-	refresh();
 }
 

@@ -38,11 +38,11 @@ int main( int argc, char *argv[] )
 	signal( SIGINT, handle_signal );
 
 	/** load some test commands **/
-	Resources::Instance()->getCommandDatabase()->addCommand("subversion");
+	Resources::Instance()->getCommandDatabase()->addCommand("make && ./ch");
 	Resources::Instance()->getCommandDatabase()->addCommand("ls -lah");
 	Resources::Instance()->getCommandDatabase()->addCommand("dh_make -s -p quickrdp_1-0");
 
-	Resources::Instance()->getWindow()->loadCommands();
+	Resources::Instance()->getWindow()->init();
 
 	for(;;) {
 		Resources::Instance()->getWindow()->draw();
