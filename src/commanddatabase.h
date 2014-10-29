@@ -45,10 +45,12 @@ class CommandDatabase
         CommandDatabase();
         ~CommandDatabase();
 
+		bool addCommandInteractive();
 		bool addCommand( std::string name );
 		std::vector< Command* > getCommands( std::string searchText = "" );
 
     private:
+		bool handleCommandInput( int c );
         void loadDatabase();
         std::vector< Command* > commands;
 };

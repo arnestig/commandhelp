@@ -50,24 +50,17 @@ void Window::init()
 {
 	loadCommands();
 	int y,x;
-	getmaxyx(stdscr, y, x);
+	getmaxyx( stdscr, y, x );
+
 	// help window
-	helpWindow = newwin(3, x/2, 1, x/2+1);
-	box(helpWindow, 0, 0);
+	helpWindow = newwin( 3, x/2, 1, x/2+1 );
 
 	// search window
-	searchWindow = newwin(3, x/2 - 1, 1, 1);
-	box(searchWindow, 0, 0);
+	searchWindow = newwin( 3, x/2 - 1, 1, 1 );
 	keypad( searchWindow, true );
 
 	// command window
-	commandWindow = newwin(y-4, x - 1, 4, 1);
-	box(commandWindow, 0, 0);
-}
-
-void Window::addCommand()
-{
-
+	commandWindow = newwin( y-4, x - 1, 4, 1 );
 }
 
 void Window::runCommand()
@@ -122,8 +115,8 @@ void Window::handleInput( int c )
 				}
 			}
 		break;
-		case K_CTRL_A:
-			addCommand();
+		case K_CTRL_T:
+			Resources::Instance()->getCommandDatabase()->addCommandInteractive();
 		break;
 		case KEY_ENTER:
 		case K_ENTER:
@@ -177,10 +170,9 @@ void Window::draw()
 	// draw search box
 	mvwprintw( searchWindow, 1, 1, "Search: %s", getSearchText().c_str() );
 
-	wborder(helpWindow, '|', '|', '-', '-', '+', '+', '+', '+');
-	wborder(searchWindow, '|', '|', '-', '-', '+', '+', '+', '+');
-	wborder(commandWindow, '|', '|', '-', '-', '+', '+', '+', '+');
-
+	box( searchWindow, 0, 0 );
+	box( commandWindow, 0, 0 );
+	box( helpWindow, 0, 0 );
 	wrefresh(commandWindow);
 	wrefresh(helpWindow);
 	wrefresh(searchWindow);

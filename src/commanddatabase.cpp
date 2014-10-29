@@ -59,6 +59,11 @@ CommandDatabase::~CommandDatabase()
     commands.clear();
 }
 
+bool CommandDatabase::handleCommandInput( int c )
+{
+	return true;
+}
+
 void CommandDatabase::loadDatabase()
 {
     // delete our previous command database
@@ -75,6 +80,24 @@ void CommandDatabase::loadDatabase()
 bool CommandDatabase::addCommand( std::string name )
 {
 	commands.push_back( new Command( name ) );
+	return true;
+}
+
+bool CommandDatabase::addCommandInteractive()
+{
+	int height = 10;
+	int width = 40;
+	int y,x;
+	getmaxyx( stdscr, y, x );
+	WINDOW *newCommand = newwin( height,width,(y-height)/2,(x-width)/2 );
+	box( newCommand, 0, 0 );
+	mvwprintw( newCommand, 1, 1, "Command: " );
+	int c = wgetch( newCommand );
+	while ( handleCommandInput( c ) == true ) {
+		c = wgetch( newCommand );
+	}
+
+	wrefresh( newCommand );
 	return true;
 }
 
