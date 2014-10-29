@@ -61,7 +61,37 @@ CommandDatabase::~CommandDatabase()
 
 bool CommandDatabase::handleCommandInput( int c )
 {
-	return true;
+	switch ( c ) {
+		case KEY_ENTER:
+		case K_ENTER:
+			addCommand( newCommandText );
+			newCommandText.clear();
+			return false;
+		break;
+		case KEY_BACKSPACE:
+		case K_BACKSPACE:
+			popNewCommandText();
+			return true;
+		break;
+		default:
+			if ( c > 31 && c < 127 ) {
+				appendNewCommandText( (char*)(&c) );			
+				return true;
+			}
+		break;
+	}
+}
+
+void CommandDatabase::appendNewCommandText( char *add )
+{
+	newCommandText.append( add );
+}
+
+void CommandDatabase::popNewCommandText()
+{
+	if ( newCommandText.length() > 0 ) {
+		newCommandText.erase( newCommandText.end() - 1 );
+	}
 }
 
 void CommandDatabase::loadDatabase()
@@ -85,20 +115,26 @@ bool CommandDatabase::addCommand( std::string name )
 
 bool CommandDatabase::addCommandInteractive()
 {
-	int height = 10;
-	int width = 40;
+	int height = 3;
+	int width = 100;
 	int y,x;
 	getmaxyx( stdscr, y, x );
 	WINDOW *newCommand = newwin( height,width,(y-height)/2,(x-width)/2 );
 	box( newCommand, 0, 0 );
-	mvwprintw( newCommand, 1, 1, "Command: " );
+	mvwprintw( newCommand, 1, 1, "Add new command: %s",newCommandText.c_str() );
 	int c = wgetch( newCommand );
 	while ( handleCommandInput( c ) == true ) {
+		wclear( newCommand );
+		box( newCommand, 0, 0 );
+		mvwprintw( newCommand, 1, 1, "Add new command: %s",newCommandText.c_str() );
 		c = wgetch( newCommand );
 	}
-
-	wrefresh( newCommand );
-	return true;
+	
+	if ( newCommandText.empty() == false ) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 std::vector< Command* > CommandDatabase::getCommands( std::string searchText )

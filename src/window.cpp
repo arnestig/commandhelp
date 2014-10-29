@@ -117,6 +117,7 @@ void Window::handleInput( int c )
 		break;
 		case K_CTRL_T:
 			Resources::Instance()->getCommandDatabase()->addCommandInteractive();
+			loadCommands();
 		break;
 		case KEY_ENTER:
 		case K_ENTER:
