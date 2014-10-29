@@ -52,20 +52,17 @@ void Window::init()
 	int y,x;
 	getmaxyx(stdscr, y, x);
 	// help window
-	helpWindow = newwin(3, x - 1, 4, 1);
+	helpWindow = newwin(3, x/2, 1, x/2+1);
 	box(helpWindow, 0, 0);
-	wborder(helpWindow, '|', '|', '-', '-', '+', '+', '+', '+');
 
 	// search window
-	searchWindow = newwin(3, x - 1, 1, 1);
+	searchWindow = newwin(3, x/2 - 1, 1, 1);
 	box(searchWindow, 0, 0);
-	wborder(searchWindow, '|', '|', '-', '-', '+', '+', '+', '+');
 	keypad( searchWindow, true );
 
 	// command window
-	commandWindow = newwin(y-7, x - 1, 7, 1);
+	commandWindow = newwin(y-4, x - 1, 4, 1);
 	box(commandWindow, 0, 0);
-	wborder(commandWindow, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 
 void Window::addCommand()
@@ -95,6 +92,8 @@ void Window::loadCommands()
 	commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
 	if ( commands.empty() == false ) {
 		curCommand = commands[ 0 ];
+	} else {
+		curCommand = NULL;
 	}
 }
 
@@ -118,6 +117,8 @@ void Window::handleInput( int c )
 				selectedPosition++;
 				if ( commands.size() > selectedPosition ) {
 					curCommand = commands.at( selectedPosition );
+				} else {
+					curCommand = NULL;
 				}
 			}
 		break;
@@ -133,6 +134,8 @@ void Window::handleInput( int c )
 				selectedPosition--;
 				if ( commands.size() > selectedPosition ) {
 					curCommand = commands.at( selectedPosition );
+				} else {
+					curCommand = NULL;
 				}
 			}
 		break;
@@ -174,9 +177,13 @@ void Window::draw()
 	// draw search box
 	mvwprintw( searchWindow, 1, 1, "Search: %s", getSearchText().c_str() );
 
+	wborder(helpWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+	wborder(searchWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+	wborder(commandWindow, '|', '|', '-', '-', '+', '+', '+', '+');
+
+	wrefresh(commandWindow);
 	wrefresh(helpWindow);
 	wrefresh(searchWindow);
-	wrefresh(commandWindow);
 	int c = wgetch(searchWindow);
 	handleInput( c );
 }
