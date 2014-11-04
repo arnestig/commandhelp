@@ -21,6 +21,8 @@
 
 #include "commanddatabase.h"
 #include "resources.h"
+#include <stdlib.h>
+#include <fstream>
 
 /** BEGIN COMMAND **/
 Command::Command( std::string name )
@@ -49,6 +51,7 @@ void Command::setName( std::string name )
 
 CommandDatabase::CommandDatabase()
 {
+	loadDatabase();
 }
 
 CommandDatabase::~CommandDatabase()
@@ -102,9 +105,18 @@ void CommandDatabase::loadDatabase()
     }
     commands.clear();
 
-    /** Parse commands here
-        while () { addCommand(); } 
-    **/
+	char *home_path = getenv( "HOME" );
+	char database_path[256];
+	sprintf(database_path,"%s/.ch/commands",home_path);
+	std::ifstream ifs;
+	ifs.open( database_path, std::ifstream::in );
+	if ( ifs.is_open() == true ) {
+		std::string line;
+
+		while (std::getline(ifs, line)) {
+			addCommand( line );
+		}
+	}
 }
 
 bool CommandDatabase::addCommand( std::string name )

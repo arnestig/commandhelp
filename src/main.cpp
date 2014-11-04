@@ -37,11 +37,6 @@ int main( int argc, char *argv[] )
 	// register our signal handler
 	signal( SIGINT, handle_signal );
 
-	/** load some test commands **/
-	Resources::Instance()->getCommandDatabase()->addCommand("make && ./ch");
-	Resources::Instance()->getCommandDatabase()->addCommand("ls -lah");
-	Resources::Instance()->getCommandDatabase()->addCommand("dh_make -s -p quickrdp_1-0");
-
 	Resources::Instance()->getWindow()->init();
 
 	for(;;) {
