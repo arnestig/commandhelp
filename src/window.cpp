@@ -53,14 +53,14 @@ void Window::init()
 	getmaxyx( stdscr, y, x );
 
 	// help window
-	helpWindow = newwin( 3, x/2, 1, x/2+1 );
+	helpWindow = newwin( 3, x/2 - 1, 1, x/2+1 );
 
 	// search window
 	searchWindow = newwin( 3, x/2 - 1, 1, 1 );
 	keypad( searchWindow, true );
 
 	// command window
-	commandWindow = newwin( y-4, x - 1, 4, 1 );
+	commandWindow = newwin( y-4, x - 2, 4, 1 );
 }
 
 void Window::runCommand()
@@ -174,9 +174,10 @@ void Window::draw()
 	box( searchWindow, 0, 0 );
 	box( commandWindow, 0, 0 );
 	box( helpWindow, 0, 0 );
-	wrefresh(commandWindow);
-	wrefresh(helpWindow);
-	wrefresh(searchWindow);
+	wnoutrefresh( commandWindow );
+	wnoutrefresh( helpWindow );
+	wnoutrefresh( searchWindow );
+	doupdate();
 	int c = wgetch(searchWindow);
 	handleInput( c );
 }
