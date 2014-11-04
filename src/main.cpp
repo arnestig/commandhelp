@@ -21,6 +21,8 @@
 
 //#include <stdio.h>
 #include <signal.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <stdlib.h>
 #include "resources.h"
 
@@ -34,6 +36,11 @@ void handle_signal( int signal )
 
 int main( int argc, char *argv[] )
 {
+	// make sure we have a ~/.ch/ structure
+	char *home_path = getenv( "HOME" );
+	char data_path[256];
+	sprintf(data_path,"%s/.ch",home_path);
+	mkdir( data_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 	// register our signal handler
 	signal( SIGINT, handle_signal );
 
