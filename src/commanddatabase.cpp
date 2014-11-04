@@ -117,11 +117,28 @@ void CommandDatabase::loadDatabase()
 			addCommand( line );
 		}
 	}
+	ifs.close();
+}
+
+void CommandDatabase::writeDatabase()
+{
+	char *home_path = getenv( "HOME" );
+	char database_path[256];
+	sprintf(database_path,"%s/.ch/commands",home_path);
+	std::ofstream ofs;
+	ofs.open( database_path, std::ifstream::out );
+	if ( ofs.is_open() == true ) {
+		for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+			ofs << (*it)->getName() << std::endl;
+		}
+	}
+	ofs.close();
 }
 
 bool CommandDatabase::addCommand( std::string name )
 {
 	commands.push_back( new Command( name ) );
+	writeDatabase();
 	return true;
 }
 

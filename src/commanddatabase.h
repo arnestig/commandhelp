@@ -54,6 +54,7 @@ class CommandDatabase
 		void popNewCommandText();
 		bool handleCommandInput( int c );
         void loadDatabase();
+		void writeDatabase();
 
 		std::string newCommandText;
         std::vector< Command* > commands;
