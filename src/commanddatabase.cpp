@@ -51,7 +51,6 @@ void Command::setName( std::string name )
 
 CommandDatabase::CommandDatabase()
 {
-	loadDatabase();
 }
 
 CommandDatabase::~CommandDatabase()

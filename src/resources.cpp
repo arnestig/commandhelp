@@ -28,6 +28,7 @@ Resources::Resources()
     	window( NULL )
 {
     commandDatabase = new CommandDatabase();
+    commandDatabase->loadDatabase();
     window = new Window();
 }
 
