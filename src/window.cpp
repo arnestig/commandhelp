@@ -140,7 +140,7 @@ void Window::handleInput( int c )
 		break;
 		default:
 			if ( c > 31 && c < 127 ) {
-				appendSearchText( (char*)(&c) );			
+				appendSearchText( (char*)(&c) );
 				loadCommands();
 			}
 		break;
@@ -153,7 +153,7 @@ void Window::draw()
 	wclear( helpWindow );
 	wclear( commandWindow );
 	// draw help
-	mvwprintw( helpWindow, 1, 1, "Help: %s", "Some help" );
+	mvwprintw( helpWindow, 1, 1, "Ctrl+T - %s", "Add new command" );
 
 	// draw commands
 	init_pair(1,COLOR_BLACK, COLOR_YELLOW);

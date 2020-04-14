@@ -31,8 +31,8 @@ class Resources
         static Resources* Instance();
         static void DestroyInstance();
 
-        CommandDatabase* getCommandDatabase() const;
-        Window* getWindow() const;
+        CommandDatabase* getCommandDatabase();
+        Window* getWindow();
 
     private:
         static Resources* instance;

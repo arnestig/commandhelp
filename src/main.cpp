@@ -19,11 +19,13 @@
     along with commandhelp.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-//#include <stdio.h>
+#include <stdio.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <sstream>
 #include "resources.h"
 
 void handle_signal( int signal )
@@ -44,10 +46,24 @@ int main( int argc, char *argv[] )
 	// register our signal handler
 	signal( SIGINT, handle_signal );
 
-	Resources::Instance()->getWindow()->init();
+    printf("argc: %d\n",argc);
+    // adding command via argument
+    if ( argc > 1 ) {
+        std::stringstream ss;
+        for ( int i=1; i < argc; i++ ) {
+            ss << argv[i];
+            if ( i+1 < argc ) {
+                ss << " ";
+            }
+        }
+        Resources::Instance()->getCommandDatabase()->addCommand(ss.str());
+		Resources::Instance()->DestroyInstance();
+    } else {
+        Resources::Instance()->getWindow()->init();
 
-	for(;;) {
-		Resources::Instance()->getWindow()->draw();
-	}
+        for(;;) {
+            Resources::Instance()->getWindow()->draw();
+        }
+    }
 }
 

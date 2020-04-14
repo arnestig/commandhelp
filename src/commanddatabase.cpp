@@ -77,7 +77,7 @@ bool CommandDatabase::handleCommandInput( int c )
 		break;
 		default:
 			if ( c > 31 && c < 127 ) {
-				appendNewCommandText( (char*)(&c) );			
+				appendNewCommandText( (char*)(&c) );
 				return true;
 			}
 		break;
@@ -157,7 +157,7 @@ bool CommandDatabase::addCommandInteractive()
 		mvwprintw( newCommand, 1, 1, "Add new command: %s",newCommandText.c_str() );
 		c = wgetch( newCommand );
 	}
-	
+
 	if ( newCommandText.empty() == false ) {
 		return true;
 	} else {

@@ -27,9 +27,6 @@ Resources::Resources()
     :   commandDatabase( NULL ),
     	window( NULL )
 {
-    commandDatabase = new CommandDatabase();
-    commandDatabase->loadDatabase();
-    window = new Window();
 }
 
 Resources::~Resources()
@@ -52,12 +49,20 @@ Resources* Resources::Instance()
     return instance;
 }
 
-CommandDatabase* Resources::getCommandDatabase() const
+CommandDatabase* Resources::getCommandDatabase()
 {
+    if ( commandDatabase == NULL ) {
+        commandDatabase = new CommandDatabase();
+        commandDatabase->loadDatabase();
+    }
+
     return commandDatabase;
 }
 
-Window* Resources::getWindow() const
+Window* Resources::getWindow()
 {
+    if ( window == NULL ) {
+        window = new Window();
+    }
     return window;
 }
