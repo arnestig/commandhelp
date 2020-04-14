@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2014 commandhelp
+    Copyright (C) 2014-2020 commandhelp
 
     Written by Tobias Eliasson <arnestig@gmail.com>.
 
