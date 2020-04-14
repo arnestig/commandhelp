@@ -119,6 +119,13 @@ void Window::handleInput( int c )
 			Resources::Instance()->getCommandDatabase()->addCommandInteractive();
 			loadCommands();
 		break;
+		case K_CTRL_D:
+			curCommand = Resources::Instance()->getCommandDatabase()->removeCommand( curCommand );
+            commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
+            if ( selectedPosition == commands.size() && commands.size() > 0 ) {
+                selectedPosition = commands.size()-1;
+            }
+		break;
 		case KEY_ENTER:
 		case K_ENTER:
 			runCommand();

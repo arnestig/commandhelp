@@ -141,6 +141,25 @@ bool CommandDatabase::addCommand( std::string name )
 	return true;
 }
 
+Command* CommandDatabase::removeCommand( Command *command )
+{
+    Command *newcom = NULL;
+    if ( command != NULL ) {
+        for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ) {
+            if ( (*it) == command ) {
+                it = commands.erase(it);
+                if ( it != commands.end() ) {
+                    newcom = (*it);
+                }
+                writeDatabase();
+            } else {
+                ++it;
+            }
+        }
+    }
+    return newcom;
+}
+
 bool CommandDatabase::addCommandInteractive()
 {
 	int height = 3;

@@ -47,6 +47,7 @@ class CommandDatabase
 
 		bool addCommandInteractive();
 		bool addCommand( std::string name );
+        Command* removeCommand( Command *command );
         void loadDatabase();
 		std::vector< Command* > getCommands( std::string searchText = "" );
 
