@@ -84,7 +84,16 @@ void Window::loadCommands()
 	commands.clear();
 	commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
 	if ( commands.empty() == false ) {
+        Command *oldCommand = curCommand;
+        // check if our old command is in this list
+        selectedPosition = 0;
 		curCommand = commands[ 0 ];
+        for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+            if ( oldCommand == *it ) {
+                selectedPosition = it - commands.begin();
+                curCommand = *it;
+            }
+        }
 	} else {
 		curCommand = NULL;
 	}
@@ -163,18 +172,18 @@ void Window::draw()
 	mvwprintw( helpWindow, 1, 1, "Ctrl+T - %s", "Add new command" );
 
 	// draw commands
-	init_pair(1,COLOR_BLACK, COLOR_YELLOW);
+	init_pair(1,COLOR_YELLOW, COLOR_BLACK);
 	unsigned int commandIndex = 0;
 	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
 		// draw background if this is our selected command
 		if ( commandIndex == selectedPosition ) {
-			wattron( commandWindow, COLOR_PAIR(1) );
-		} 
+            wattron( commandWindow, COLOR_PAIR(1) );
+        }
 
 		mvwprintw( commandWindow, 1 + commandIndex++, 1, "%s",(*it)->getName().c_str() );
-		wattroff( commandWindow, COLOR_PAIR(1) );
+        wattroff( commandWindow, COLOR_PAIR(1) );
 	}
-	
+
 	// draw search box
 	mvwprintw( searchWindow, 1, 1, "Search: %s", getSearchText().c_str() );
 
