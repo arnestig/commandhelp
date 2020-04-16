@@ -46,7 +46,6 @@ int main( int argc, char *argv[] )
 	// register our signal handler
 	signal( SIGINT, handle_signal );
 
-    printf("argc: %d\n",argc);
     // adding command via argument
     if ( argc > 1 ) {
         std::stringstream ss;
