@@ -138,11 +138,15 @@ void Window::handleInput( int c )
 		break;
 		case K_CTRL_T:
 			Resources::Instance()->getCommandDatabase()->addCommandInteractive();
-			loadCommands();
+            loadCommands(selectedGroup > 0);
 		break;
 		case K_CTRL_D:
 			curCommand = Resources::Instance()->getCommandDatabase()->removeCommand( curCommand );
-            commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
+            groups = Resources::Instance()->getCommandDatabase()->getGroups();
+            if ( selectedGroup > groups.size()-1 ) {
+                selectedGroup = groups.size()-1;
+            }
+            loadCommands(selectedGroup > 0);
             if ( selectedPosition == commands.size() && commands.size() > 0 ) {
                 selectedPosition = commands.size()-1;
             }
