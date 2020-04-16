@@ -47,19 +47,22 @@ class Window
 
     private:
 		unsigned int selectedPosition;
+		unsigned int selectedGroup;
 		std::string searchText;
 
-		void loadCommands();
+		void loadCommands( bool byGroup = false );
 		void runCommand();
 		void handleInput( int c );
 		std::string getSearchText();
 		void appendSearchText( char *add );
 		void popSearchText();
 		std::vector< Command* > commands;
+		std::vector< std::string > groups;
 		Command *curCommand;
 		WINDOW *helpWindow;
 		WINDOW *searchWindow;
 		WINDOW *commandWindow;
+		WINDOW *groupWindow;
 };
 
 #endif

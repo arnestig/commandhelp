@@ -33,10 +33,12 @@ class Command
         ~Command();
 
 		std::string getName() const;
+        std::string getGroup() const;
 		void setName( std::string name );
 
     private:
         std::string name;
+        std::string group;
 };
 
 class CommandDatabase
@@ -50,6 +52,8 @@ class CommandDatabase
         Command* removeCommand( Command *command );
         void loadDatabase();
 		std::vector< Command* > getCommands( std::string searchText = "" );
+		std::vector< Command* > getCommandsByGroup( std::string group );
+        std::vector< std::string > getGroups();
 
     private:
 		void appendNewCommandText( char *add );

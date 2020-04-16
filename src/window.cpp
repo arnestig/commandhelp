@@ -42,6 +42,7 @@ Window::~Window()
 	delwin( helpWindow );
 	delwin( searchWindow );
 	delwin( commandWindow );
+	delwin( groupWindow );
 	refresh();
 	endwin();
 }
@@ -53,14 +54,18 @@ void Window::init()
 	getmaxyx( stdscr, y, x );
 
 	// help window
-	helpWindow = newwin( 3, x/2 - 1, 1, x/2+1 );
+	helpWindow = newwin( 3, x/2 - 2, 1, x/2+1 );
 
 	// search window
 	searchWindow = newwin( 3, x/2 - 1, 1, 1 );
 	keypad( searchWindow, true );
 
 	// command window
-	commandWindow = newwin( y-4, x - 2, 4, 1 );
+	commandWindow = newwin( y-7, x - 2, 7, 1 );
+
+	// group window
+	groupWindow = newwin( 3, x - 2, 4, 1 );
+
 }
 
 void Window::runCommand()
@@ -79,10 +84,17 @@ std::string Window::getSearchText()
 	return searchText;
 }
 
-void Window::loadCommands()
+void Window::loadCommands( bool byGroup )
 {
 	commands.clear();
-	commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
+    if ( byGroup == true ) {
+        searchText.clear();
+        commands = Resources::Instance()->getCommandDatabase()->getCommandsByGroup( groups.at( selectedGroup ) );
+    } else {
+        commands = Resources::Instance()->getCommandDatabase()->getCommands( searchText );
+    }
+
+	groups = Resources::Instance()->getCommandDatabase()->getGroups();
 	if ( commands.empty() == false ) {
         Command *oldCommand = curCommand;
         // check if our old command is in this list
@@ -139,6 +151,18 @@ void Window::handleInput( int c )
 		case K_ENTER:
 			runCommand();
 		break;
+        case KEY_LEFT:
+            if ( selectedGroup > 0 ) {
+                selectedGroup--;
+            }
+            loadCommands(true);
+        break;
+        case KEY_RIGHT:
+            if ( selectedGroup+1 < groups.size() ) {
+                selectedGroup++;
+            }
+            loadCommands(true);
+        break;
 		case KEY_UP:
 			if ( selectedPosition > 0 ) {
 				selectedPosition--;
@@ -168,11 +192,28 @@ void Window::draw()
 	wclear( searchWindow );
 	wclear( helpWindow );
 	wclear( commandWindow );
+	wclear( groupWindow );
+
+    // make colors
+	init_pair(1,COLOR_YELLOW, COLOR_BLACK);
+	init_pair(2,COLOR_BLUE, COLOR_BLACK);
+
 	// draw help
 	mvwprintw( helpWindow, 1, 1, "Ctrl+T - %s", "Add new command" );
 
+    // draw groups
+    int g = 0;
+    int gpos = 1;
+    for( std::vector< std::string >::iterator it = groups.begin(); it != groups.end(); ++it ) {
+        if ( g++ == selectedGroup ) {
+            wattron( groupWindow, COLOR_PAIR(2) );
+        }
+        mvwprintw( groupWindow, 1, gpos, "%s", (*it).c_str() );
+        wattroff( groupWindow, COLOR_PAIR(2) );
+        gpos += (*it).length()+1;
+    }
+
 	// draw commands
-	init_pair(1,COLOR_YELLOW, COLOR_BLACK);
 	unsigned int commandIndex = 0;
 	for( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
 		// draw background if this is our selected command
@@ -180,7 +221,7 @@ void Window::draw()
             wattron( commandWindow, COLOR_PAIR(1) );
         }
 
-		mvwprintw( commandWindow, 1 + commandIndex++, 1, "%s",(*it)->getName().c_str() );
+        mvwprintw( commandWindow, 1 + commandIndex++, 1, "%s",(*it)->getName().c_str() );
         wattroff( commandWindow, COLOR_PAIR(1) );
 	}
 
@@ -190,8 +231,10 @@ void Window::draw()
 	box( searchWindow, 0, 0 );
 	box( commandWindow, 0, 0 );
 	box( helpWindow, 0, 0 );
+	box( groupWindow, 0, 0 );
 	wnoutrefresh( commandWindow );
 	wnoutrefresh( helpWindow );
+	wnoutrefresh( groupWindow );
 	wnoutrefresh( searchWindow );
 	doupdate();
 	int c = wgetch(searchWindow);

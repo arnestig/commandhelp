@@ -22,12 +22,15 @@
 #include "commanddatabase.h"
 #include "resources.h"
 #include <stdlib.h>
+#include <algorithm>
 #include <fstream>
 
 /** BEGIN COMMAND **/
 Command::Command( std::string name )
     :   name( name )
 {
+    size_t p = name.find_first_of(" ");
+    group = name.substr(0,p);
 }
 
 Command::~Command()
@@ -37,6 +40,11 @@ Command::~Command()
 std::string Command::getName() const
 {
     return name;
+}
+
+std::string Command::getGroup() const
+{
+    return group;
 }
 
 void Command::setName( std::string name )
@@ -182,6 +190,34 @@ bool CommandDatabase::addCommandInteractive()
 	} else {
 		return false;
 	}
+}
+
+std::vector< std::string > CommandDatabase::getGroups()
+{
+    std::vector< std::string > groups;
+    groups.push_back( "*" );
+    for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it) {
+        if ( std::find(groups.begin(), groups.end(), (*it)->getGroup() ) == groups.end() ) {
+            groups.push_back( (*it)->getGroup() );
+        }
+    }
+    return groups;
+}
+
+std::vector< Command* > CommandDatabase::getCommandsByGroup( std::string group )
+{
+	std::vector< Command* > retval;
+	if ( group != "*" ) {
+		for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+			if ( (*it)->getGroup() == group ) {
+				retval.push_back( (*it) );
+			}
+		}
+	} else {
+        retval = commands;
+	}
+	return retval;
+
 }
 
 std::vector< Command* > CommandDatabase::getCommands( std::string searchText )
