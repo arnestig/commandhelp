@@ -25,6 +25,15 @@
 #include <algorithm>
 #include <fstream>
 
+
+/** Command sorter **/
+
+bool sortCommands(Command *l, Command *r) {
+    return (l->getName()<r->getName());
+}
+
+/** END command sorter **/
+
 /** BEGIN COMMAND **/
 Command::Command( std::string name )
     :   name( name )
@@ -90,6 +99,7 @@ bool CommandDatabase::handleCommandInput( int c )
 			}
 		break;
 	}
+    return false;
 }
 
 void CommandDatabase::appendNewCommandText( char *add )
@@ -201,6 +211,7 @@ std::vector< std::string > CommandDatabase::getGroups()
             groups.push_back( (*it)->getGroup() );
         }
     }
+    std::sort( groups.begin(), groups.end() );
     return groups;
 }
 
@@ -216,6 +227,7 @@ std::vector< Command* > CommandDatabase::getCommandsByGroup( std::string group )
 	} else {
         retval = commands;
 	}
+    std::sort( retval.begin(), retval.end(), &sortCommands );
 	return retval;
 
 }
@@ -232,6 +244,7 @@ std::vector< Command* > CommandDatabase::getCommands( std::string searchText )
 	} else {
 		retval = commands;
 	}
+    std::sort( retval.begin(), retval.end(), &sortCommands );
 	return retval;
 }
 
