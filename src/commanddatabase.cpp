@@ -38,8 +38,17 @@ bool sortCommands(Command *l, Command *r) {
 Command::Command( std::string name )
     :   name( name )
 {
+    bool skip_sudo = 1;
+    // skip first group if it is sudo. Option for this?
     size_t p = name.find_first_of(" ");
     group = name.substr(0,p);
+    if ( skip_sudo ) {
+        if ( group == "sudo" ) {
+            size_t s = p+1;
+            p = name.find_first_of(" ",s);
+            group = name.substr(s,p-s);
+        }
+    }
 }
 
 Command::~Command()
