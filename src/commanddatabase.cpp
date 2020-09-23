@@ -163,9 +163,13 @@ void CommandDatabase::writeDatabase()
 
 bool CommandDatabase::addCommand( std::string name )
 {
-	commands.push_back( new Command( name ) );
-	writeDatabase();
-	return true;
+    // first check if this command already exist in our database
+    if ( getCommandByName( name ) == NULL ) {
+        commands.push_back( new Command( name ) );
+        writeDatabase();
+        return true;
+    }
+    return false;
 }
 
 Command* CommandDatabase::removeCommand( Command *command )
@@ -239,6 +243,17 @@ std::vector< Command* > CommandDatabase::getCommandsByGroup( std::string group )
     std::sort( retval.begin(), retval.end(), &sortCommands );
 	return retval;
 
+}
+
+Command* CommandDatabase::getCommandByName( std::string searchText )
+{
+    Command *ret = NULL;
+    for ( std::vector< Command* >::iterator it = commands.begin(); it != commands.end(); ++it ) {
+        if ( (*it)->getName() == searchText ) {
+            ret = (*it);
+        }
+    }
+    return ret;
 }
 
 std::vector< Command* > CommandDatabase::getCommands( std::string searchText )

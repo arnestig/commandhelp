@@ -52,6 +52,7 @@ class CommandDatabase
         Command* removeCommand( Command *command );
         void loadDatabase();
 		std::vector< Command* > getCommands( std::string searchText = "" );
+        Command* getCommandByName( std::string searchText );
 		std::vector< Command* > getCommandsByGroup( std::string group );
         std::vector< std::string > getGroups();
 
